@@ -1,12 +1,19 @@
 Package: uesdRobust
-Title: What the Package Does (One Line, Title Case)
+Title: An R package to estimate UESDs and make them robust to type I error inflation 
 Version: 0.0.0.9000
 Authors@R: 
-    person("Joris", "Frese", , "joris.frese@eui.eu", role = c("aut", "cre")),
     person("Sascha", "Riaz", , "sascha.riaz@eui.eu", role = c("aut", "cre"))
+    person("Joris", "Frese", , "joris.frese@eui.eu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-5871-997X"))
 Description: An R package to estimate UESDs and make them robust to type I error inflation. 
 License: MIT + file LICENSE
 Encoding: UTF-8
+Imports:
+  stats,
+  sandwich,
+  lmtest,
+  rdrobust,
+  ggplot2
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 URL: https://github.com/fresej/uesdRobust
