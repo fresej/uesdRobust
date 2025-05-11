@@ -18,14 +18,14 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of uesdRobust is to ...
+The goal of uesdRobust is to assist users in analyzing (OLS or RDD) UESDs. The package also allows users to estimate placebo-robust p-values and confidence intervals that adjust UESD results to context-specific Type I error inflation.
 
 ## Installation
 
 You can install the development version of uesdRobust like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+devtools::install_github("fresej/uesdRobust")
 ```
 
 ## Example
