@@ -25,7 +25,7 @@ statistics than the main test.
 
 ## Installation
 
-You can install the uesdRobust R package like so:
+You can install the **uesdRobust** R package like so:
 
 ``` r
 devtools::install_github("fresej/uesdRobust")
@@ -151,8 +151,10 @@ df_sim <- data.frame(
 main_cut    <- 0
 main_eff    <- 1
 
-placebo_cuts <- c(-76, -66, -56, -39, -30, -25, - 20, -17, -14, -11, -10, -7, -2,  10, 15, 18, 23, 27, 29,  30, 33, 31, 34,45,66,76)
-placebo_eff  <- c( 1.5, -2, 1.9, 1.6, -0.3, 1.7, -0.4,  0.5, -2.3, 0.7, -0.4,  0.5, -0.3, 0.7, -0.4, 0.7, 0.9, 1.8, 3, 2.1, 2.2, 1.7, 1.1, 1.2, 1, -1)
+placebo_cuts <- c(-76, -66, -56, -39, -30, -25, - 20, -17, -14, -11, -10, 
+                  -7, -2,  10, 15, 18, 23, 27, 29,  30, 33, 31, 34,45,66,76)
+placebo_eff  <- c( 1.5, -2, 1.9, 1.6, -0.3, 1.7, -0.4,  0.5, -2.3, 0.7, -0.4,  0.5, 
+                   -0.3, 0.7, -0.4, 0.7, 0.9, 1.8, 3, 2.1, 2.2, 1.7, 1.1, 1.2, 1, -1)
 
 df_sim$outcome <- 0
 df_sim$outcome <- df_sim$outcome +
@@ -205,8 +207,7 @@ rdd_res <- uesd_robust_rdd(
 #> Using [conventional] row for placebos:   estimate=0.8656   se=0.4096   z=2.1132   p=0.0346
 #> 
 #> Selected 95% CI for ‘ITT’ (±1.96×SE): [0.0628, 1.6685]
-#> Warning in rdrobust::rdrobust(y = df_clean[[outcome]], x = df_clean[[running]],
-#> : c should be set within the range of x
+#> 
 #> Placebo‐robust p-value: 0.1918
 #> Placebo‐robust 95% CI:     [-1.1163, 2.8475]
 

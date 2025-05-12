@@ -44,7 +44,7 @@ uesd_placebo_plot <- function(res, binwidth = 0.1) {
     ggplot2::geom_histogram(binwidth = binwidth, color = "black") +
     ggplot2::scale_fill_manual(
       values = c("FALSE" = "grey", "TRUE" = "red"),
-      guide  = FALSE
+      guide  = "none"
     ) +
     ggplot2::geom_vline(
       xintercept = main_stat,
