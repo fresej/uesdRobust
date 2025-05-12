@@ -86,6 +86,7 @@ The function contains the following parameters:
 
 **res**: A list returned (invisibly) by `uesd_robust_ols(..., placebos = TRUE)`
              or `uesd_robust_rdd(..., placebos = TRUE)`. It contains the results of all placebo tests and the main test.
+             
 **binwidth**: Numeric. Width of the histogram bins (default = 0.1).
 
 
@@ -99,26 +100,18 @@ This is a basic example using simulated data to demonstrate one hypothetical use
 library(uesdRobust)
 
 
-# seed for reprodubility
+# simulate some survey data with placebo effects
 set.seed(123)
-
-
-# n=3000 observations of a running variable on [−150,10]
 n <- 3000
 df_sim <- data.frame(
   running = sample(-150:100, size = n, replace = TRUE)
 )
-
-
-# simulate outcome with jumps at discontinuity and various placebo jumps
 main_cut    <- 0
 main_eff    <- 1
-
 placebo_cuts <- c(-76, -66, -56, -39, -30, -25, - 20, -17, -14, -11, -10, 
                   -7, -2,  10, 15, 18, 23, 27, 29,  30, 33, 31, 34,45,66,76)
 placebo_eff  <- c( 1.5, -2, 1.9, 1.6, -0.3, 1.7, -0.4,  0.5, -2.3, 0.7, -0.4,  0.5, 
                    -0.3, 0.7, -0.4, 0.7, 0.9, 1.8, 3, 2.1, 2.2, 1.7, 1.1, 1.2, 1, -1)
-
 df_sim$outcome <- 0
 df_sim$outcome <- df_sim$outcome +
   main_eff * (df_sim$running >= main_cut)
@@ -130,7 +123,7 @@ df_sim$outcome <- df_sim$outcome +
   rnorm(n, mean = 0, sd = 1)
 
 
-# RDD‐based UESD (default uses optimal bandwidth, conventional se, and placebos)
+# RDD‐based UESD with the uesd_robust_rdd function:
 rdd_res <- uesd_robust_rdd(
   df       = df_sim,
   outcome  = "outcome",
@@ -142,7 +135,7 @@ rdd_res <- uesd_robust_rdd(
 )
 
 
-#plot the placebo distribution of z‐values
+# plot of the placebo distribution of z‐values with the uesd_placebo_plot function:
 uesd_placebo_plot(rdd_res)
 
 
