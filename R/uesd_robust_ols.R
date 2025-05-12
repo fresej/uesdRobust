@@ -16,7 +16,7 @@
 #' @importFrom lmtest coeftest
 #' @export
 
-uesd_robust_ols <- function(df, outcome, date_num, bw, cutoff = 0,
+uesd_robust_ols <- function(df, outcome, date_num, bw = 15, cutoff = 0,
                            cluster = NULL, placebos = FALSE,
                            excluded = 3) {
   # 0) Drop any NA in the running variable

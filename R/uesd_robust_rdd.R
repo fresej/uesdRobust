@@ -106,13 +106,18 @@ uesd_robust_rdd <- function(df, outcome, running, cutoff = 0,
       n_hi <- sum(df_clean[[running]] >= c0, na.rm = TRUE)
       if (n_lo < 10 || n_hi < 10) next
 
-      rd_p <- tryCatch(
-        rdrobust::rdrobust(y = df_clean[[outcome]],
-                           x = df_clean[[running]],
-                           c = c0,
-                           h = h_used),
-        error = function(e) NULL
-      )
+      rd_p <- tryCatch({
+        suppressWarnings(
+          rdrobust::rdrobust(
+            y = df_clean[[outcome]],
+            x = df_clean[[running]],
+            c = c0,
+            h = h_used
+          )
+        )
+      }, error = function(e) {
+        NULL
+      })
       if (is.null(rd_p)) next
 
       # extract same row
