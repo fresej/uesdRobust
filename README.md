@@ -214,14 +214,6 @@ rdd_res <- uesd_robust_rdd(
 
 #plot the placebo distribution of z‐values
 uesd_placebo_plot(rdd_res)
-#> Warning: The `guide` argument in `scale_*()` cannot be `FALSE`. This was deprecated in
-#> ggplot2 3.3.4.
-#> ℹ Please use "none" instead.
-#> ℹ The deprecated feature was likely used in the uesdRobust package.
-#>   Please report the issue at <https://github.com/fresej/uesdRobust/issues>.
-#> This warning is displayed once every 8 hours.
-#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-#> generated.
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
