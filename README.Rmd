@@ -20,7 +20,19 @@ knitr::opts_chunk$set(
 
 The uesdRobust R package accompanies the paper “Type I Error Inflation in Unexpected Event during Survey Designs" by Joris Frese and Sascha Riaz. In this paper, we empirically demonstrate a substantially inflated rate of false-positive findings in UESD research and propose ways to adjust UESD test statistics accordingly.
 
-The goal of the uesdRobust R package is to assist users in analyzing (OLS or RDD) UESDs. The package also allows users to estimate placebo-robust p-values and confidence intervals that adjust UESD results to context-specific Type I error inflation. For these purposes, the package offers five complementary functions: **uesd_robust_ols** for (placebo-)robust UESDs with the OLS estimator, **uesd_robust_rdd** for (placebo-)robust UESDs with the RDD estimator, **uesd_placebo_plot** to visualize the empirical distribution of placebo T or Z statistics and the share of placebo tests with more extreme statistics than the main test, **uesd_coef_plot** to visualize the UESD ITT with its unadjusted and placebo-robust 95% confidence interval, and **uesd_table** to create a LaTeX table of the unadjusted and placebo-robust results of multiple estimations.
+The goal of the uesdRobust R package is to assist users in analyzing (OLS or RDD) UESDs. The package also allows users to estimate placebo-robust p-values and confidence intervals that adjust UESD results to context-specific Type I error inflation. 
+
+For these purposes, the package offers five complementary functions: 
+
+1) **uesd_robust_ols** for (placebo-)robust UESDs with the OLS estimator, 
+
+2) **uesd_robust_rdd** for (placebo-)robust UESDs with the RDD estimator, 
+
+3) **uesd_placebo_plot** to visualize the empirical distribution of placebo T or Z statistics and the share of placebo tests with more extreme statistics than the main test, 
+
+4) **uesd_coef_plot** to visualize the UESD ITT with its unadjusted and placebo-robust 95% confidence interval, and
+
+5) **uesd_table** to create a LaTeX table of the unadjusted and placebo-robust results of multiple estimations.
 
 ## Installation
 
