@@ -19,10 +19,10 @@
 #' @export
 
 uesd_robust_rdd <- function(df, outcome, running, cutoff = 0,
-                           bw = NULL,
-                           placebos = FALSE,
-                           excluded = 3,
-                           se_type = c("conventional","bias-corrected","robust")) {
+                            bw = NULL,
+                            placebos = FALSE,
+                            excluded = 3,
+                            se_type = c("conventional","bias-corrected","robust")) {
 
   se_type <- match.arg(se_type)
   # map to row index
@@ -79,7 +79,7 @@ uesd_robust_rdd <- function(df, outcome, running, cutoff = 0,
   zcrit <- stats::qnorm(0.975)
   ci_conv <- c(est_sel - zcrit*se_sel,
                est_sel + zcrit*se_sel)
-  cat(sprintf("Selected 95%% CI for ‘ITT’ (±1.96×SE): [%.4f, %.4f]\n\n",
+  cat(sprintf("Unadjusted 95%% CI for ITT: [%.4f, %.4f]\n\n",
               ci_conv[1], ci_conv[2]))
 
   # 8) Placebo loop if requested
@@ -134,10 +134,11 @@ uesd_robust_rdd <- function(df, outcome, running, cutoff = 0,
     qz <- stats::quantile(abs(z_vals), 0.975, na.rm = TRUE)
     ci_placebo <- c(est_sel - qz*se_sel,
                     est_sel + qz*se_sel)
-
-    cat(sprintf("Placebo‐robust p-value: %.4f\n",   placebo_p))
-    cat(sprintf("Placebo‐robust 95%% CI:     [%.4f, %.4f]\n\n",
+    cat(sprintf("Placebo‐robust 95%% CI for ITT: [%.4f, %.4f]\n\n",
                 ci_placebo[1], ci_placebo[2]))
+    cat(sprintf("Unadjusted p-value for ITT: %.5f\n",   p_sel))
+    cat(sprintf("Placebo‐robust p-value for ITT: %.5f\n",   placebo_p))
+
   }
 
   # 9) Return invisibly

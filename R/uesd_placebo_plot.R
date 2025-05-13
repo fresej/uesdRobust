@@ -58,8 +58,11 @@ uesd_placebo_plot <- function(res, binwidth = 0.1) {
       subtitle = paste0(
         subtitle_prefix,
         round(main_stat, 3),
+        if (!is.null(res$p_value)) {
+          paste0("\nUnadjusted p-value = ", round(res$p_value, 4))
+        } else "",
         if (!is.null(res$placebo_p_value)) {
-          paste0("\nPlacebo-robust p-value = ", round(res$placebo_p_value, 3))
+          paste0("\nPlacebo-robust p-value = ", round(res$placebo_p_value, 4))
         } else ""
       )
     ) +

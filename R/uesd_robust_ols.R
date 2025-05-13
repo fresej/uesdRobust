@@ -6,6 +6,7 @@
 #' @param bw Numeric half‐width of the window around `cutoff`.
 #' @param cutoff Numeric cutoff on `date_num` defining the treated (≥cutoff) vs control (<cutoff) groups. Defaults to 0.
 #' @param cluster NULL (default) for heteroskedasticity‐robust SE, or a string naming a column in `df` on which to cluster.
+#' @param controls NULL (default) or a character vector of other column-names in `df` to add as linear controls.
 #' @param placebos Logical; if TRUE, runs regressions at every feasible cutoff (skipping `excluded` after the main), and computes a placebo‐robust p‐value and CI.
 #' @param excluded Integer; number of subsequent cutoffs after the main one to skip in the placebo loop (default = 3).
 #' @return Invisibly returns a list with elements:
@@ -17,8 +18,10 @@
 #' @export
 
 uesd_robust_ols <- function(df, outcome, date_num, bw = 15, cutoff = 0,
-                           cluster = NULL, placebos = FALSE,
-                           excluded = 3) {
+                                                        cluster = NULL,
+                                                        controls    = NULL,
+                                                        placebos    = FALSE,
+                                                        excluded    = 3) {
   # 0) Drop any NA in the running variable
   df_clean <- df[!is.na(df[[date_num]]), , drop = FALSE]
 
@@ -29,8 +32,15 @@ uesd_robust_ols <- function(df, outcome, date_num, bw = 15, cutoff = 0,
   }
   dat_main$ITT <- ifelse(dat_main[[date_num]] >= cutoff, 1L, 0L)
 
-  # 2) Fit main lm
-  fml    <- as.formula(paste(outcome, "~ ITT"))
+  # 2) Build regression formula, including controls if requested
+  if (is.null(controls) || length(controls) == 0) {
+    fml <- as.formula(paste(outcome, "~ ITT"))
+  } else {
+    ctrl_terms <- paste(controls, collapse = " + ")
+    fml <- as.formula(paste(outcome, "~ ITT +", ctrl_terms))
+  }
+
+
   fit_lm <- stats::lm(fml, data = dat_main)
 
   # 3) Covariance for main
@@ -110,9 +120,10 @@ uesd_robust_ols <- function(df, outcome, date_num, bw = 15, cutoff = 0,
     ci_placebo_upper <- est_main + q_abs * se_main
     ci_placebo       <- c(lower = ci_placebo_lower, upper = ci_placebo_upper)
 
-    cat(sprintf("Placebo‐robust p-value for ITT: %.4f\n", placebo_p))
     cat(sprintf("Placebo‐robust 95%% CI for ITT: [%.4f, %.4f]\n\n",
                 ci_placebo_lower, ci_placebo_upper))
+    cat(sprintf("Unadjusted p-value for ITT: %.5f\n", p_main))
+    cat(sprintf("Placebo‐robust p-value for ITT: %.5f\n", placebo_p))
   }
 
   # 7) Return invisibly, now including t_value and placebo CI
