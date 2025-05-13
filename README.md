@@ -16,13 +16,15 @@ The goal of the uesdRobust R package is to assist users in analyzing
 (OLS or RDD) UESDs. The package also allows users to estimate
 placebo-robust p-values and confidence intervals that adjust UESD
 results to context-specific Type I error inflation. For these purposes,
-the package offers four complementary functions: **uesd_robust_ols** for
+the package offers five complementary functions: **uesd_robust_ols** for
 (placebo-)robust UESDs with the OLS estimator, **uesd_robust_rdd** for
 (placebo-)robust UESDs with the RDD estimator, **uesd_placebo_plot** to
 visualize the empirical distribution of placebo T or Z statistics and
 the share of placebo tests with more extreme statistics than the main
-test, and **uesd_coef_plot** to visualize the UESD ITT with its
-unadjusted and placebo-robust 95% confidence interval.
+test, **uesd_coef_plot** to visualize the UESD ITT with its unadjusted
+and placebo-robust 95% confidence interval, and **uesd_table** to create
+a LaTeX table of the unadjusted and placebo-robust results of multiple
+estimations.
 
 ## Installation
 
@@ -146,6 +148,28 @@ The function contains the following parameters:
 `estimate`: numeric, the point estimate, `ci`: named length‐2 numeric
 for the conventional 95% CI, and `ci_placebo`: named length‐2 numeric
 for the placebo-robust 95% CI.
+
+## uesd_table
+
+The **uesd_coef_plot** function is used to create a LaTeX table showing
+the ITT estimate, its unadjusted 95% CI and p-value, its placebo-robust
+95% CI and p-value, the sample size, the estimator, and the standard
+error type. It takes the list objects created by **uesd_robust_ols** or
+**uesd_robust_rdd** as inputs and wraps features from knitr to
+tabularize them.
+
+The function contains the following parameters:
+
+**res** One of: a single result‐list (with
+`estimate`,`se`,`ci`,`p_value`,`ci_placebo`,`placebo_p_value`,`n_obs`,
+and `se_type`), a list of such result‐lists, or a character vector of
+object names in your calling environment.
+
+**digits** Integer: number of decimal places for non‐p‐value entries
+(default: 3).
+
+**digits_p** Integer: number of decimal places for p‐value entries
+(default: 5).
 
 ## Example
 
