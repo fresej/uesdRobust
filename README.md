@@ -16,12 +16,13 @@ The goal of the uesdRobust R package is to assist users in analyzing
 (OLS or RDD) UESDs. The package also allows users to estimate
 placebo-robust p-values and confidence intervals that adjust UESD
 results to context-specific Type I error inflation. For these purposes,
-the package offers three complementary functions: **uesd_robust_ols**
-for (placebo-)robust UESDs with the OLS estimator, **uesd_robust_rdd**
-for (placebo-)robust UESDs with the RDD estimator, and
-**uesd_placebo_plot** to visualize the empirical distribution of placebo
-T or Z statistics and the share of placebo tests with more extreme
-statistics than the main test.
+the package offers four complementary functions: **uesd_robust_ols** for
+(placebo-)robust UESDs with the OLS estimator, **uesd_robust_rdd** for
+(placebo-)robust UESDs with the RDD estimator, **uesd_placebo_plot** to
+visualize the empirical distribution of placebo T or Z statistics and
+the share of placebo tests with more extreme statistics than the main
+test, and **uesd_coef_plot** to visualize the UESD ITT with its
+unadjusted and placebo-robust 95% confidence interval.
 
 ## Installation
 
@@ -128,6 +129,21 @@ placebo tests and the main test.
 
 **binwidth**: Numeric. Width of the histogram bins (default = 0.1).
 
+## uesd_coef_plot
+
+The **uesd_coef_plot** function is used to visualize the ITT coefficient
+comparatively with its unadjusted and its placebo-robust 95% confidence
+interval. It takes the list objects created by **uesd_robust_ols** or
+**uesd_robust_rdd** as inputs and wraps features from ggplot2 to
+visualize them.
+
+The function contains the following parameters:
+
+**res**: A list returned by one of the UESD functions with components:
+`estimate`: numeric, the point estimate, `ci`: named length‐2 numeric
+for the conventional 95% CI, and `ci_placebo`: named length‐2 numeric
+for the placebo-robust 95% CI.
+
 ## Example
 
 This is a basic example using simulated data to demonstrate one
@@ -212,3 +228,13 @@ uesd_placebo_plot(rdd_res)
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+
+``` r
+
+
+
+# plot of the ITT coefficient with its unadjusted and placebo-robust 95% confidence interval:
+uesd_coef_plot(rdd_res)
+```
+
+<img src="man/figures/README-unnamed-chunk-2-2.png" width="100%" />
