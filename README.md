@@ -56,6 +56,9 @@ The function contains the following parameters:
 **date_num**: String name of the numeric running date variable
 (mandatory).
 
+**controls**: NULL (default) or a character vector of other column-names
+in `df` to add as linear controls.
+
 **bw**: Numeric half‐width of the window around `cutoff`. Defaults to
 15.
 
