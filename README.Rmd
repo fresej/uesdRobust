@@ -120,12 +120,12 @@ The **uesd_coef_plot** function is used to create a LaTeX table showing the ITT 
 
 The function contains the following parameters:
 
-**res** One of: a single result‐list (with `estimate`,`se`,`ci`,`p_value`,`ci_placebo`,`placebo_p_value`,`n_obs`, and `se_type`),
+**res**: One of: a single result‐list (with `estimate`,`se`,`ci`,`p_value`,`ci_placebo`,`placebo_p_value`,`n_obs`, and `se_type`),
 a list of such result‐lists, or a character vector of object names in your calling environment.
 
-**digits** Integer: number of decimal places for non‐p‐value entries (default: 3).
+**digits**: Integer: number of decimal places for non‐p‐value entries (default: 3).
 
-**digits_p** Integer: number of decimal places for p‐value entries (default: 5).
+**digits_p**: Integer: number of decimal places for p‐value entries (default: 5).
              
 
 
@@ -141,9 +141,7 @@ library(uesdRobust)
 # simulate some survey data with placebo effects
 set.seed(123)
 n <- 3000
-df_sim <- data.frame(
-  running = sample(-150:100, size = n, replace = TRUE)
-)
+df_sim <- data.frame(running = sample(-150:100, size = n, replace = TRUE))
 main_cut    <- 0
 main_eff    <- 1
 placebo_cuts <- c(-76, -66, -56, -39, -30, -25, - 20, -17, -14, -11, -10, 
@@ -151,14 +149,10 @@ placebo_cuts <- c(-76, -66, -56, -39, -30, -25, - 20, -17, -14, -11, -10,
 placebo_eff  <- c( 1.5, -2, 1.9, 1.6, -0.3, 1.7, -0.4,  0.5, -2.3, 0.7, -0.4,  0.5, 
                    -0.3, 0.7, -0.4, 0.7, 0.9, 1.8, 3, 2.1, 2.2, 1.7, 1.1, 1.2, 1, -1)
 df_sim$outcome <- 0
-df_sim$outcome <- df_sim$outcome +
-  main_eff * (df_sim$running >= main_cut)
+df_sim$outcome <- df_sim$outcome +main_eff * (df_sim$running >= main_cut)
 for(i in seq_along(placebo_cuts)) {
-  df_sim$outcome <- df_sim$outcome +
-    placebo_eff[i] * (df_sim$running >= placebo_cuts[i])
-}
-df_sim$outcome <- df_sim$outcome +
-  rnorm(n, mean = 0, sd = 1)
+df_sim$outcome <- df_sim$outcome + placebo_eff[i] * (df_sim$running >= placebo_cuts[i])}
+df_sim$outcome <- df_sim$outcome + rnorm(n, mean = 0, sd = 1)
 
 
 # RDD‐based UESD with the uesd_robust_rdd function:
