@@ -199,10 +199,12 @@ rdd_res <- uesd_robust_rdd(
 #> 
 #> Using [conventional] row for placebos:   estimate=0.8656   se=0.4096   z=2.1132   p=0.0346
 #> 
-#> Selected 95% CI for ‘ITT’ (±1.96×SE): [0.0628, 1.6685]
+#> Unadjusted 95% CI for ITT: [0.0628, 1.6685]
 #> 
-#> Placebo‐robust p-value: 0.1918
-#> Placebo‐robust 95% CI:     [-1.1163, 2.8475]
+#> Placebo‐robust 95% CI for ITT: [-1.1163, 2.8475]
+#> 
+#> Unadjusted p-value for ITT: 0.03458
+#> Placebo‐robust p-value for ITT: 0.19184
 
 
 # plot of the placebo distribution of z‐values with the uesd_placebo_plot function:
