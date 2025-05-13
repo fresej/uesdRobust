@@ -8,9 +8,10 @@ uesd_robust_ols(
   df,
   outcome,
   date_num,
-  bw,
+  bw = 15,
   cutoff = 0,
   cluster = NULL,
+  controls = NULL,
   placebos = FALSE,
   excluded = 3
 )
@@ -27,6 +28,8 @@ uesd_robust_ols(
 \item{cutoff}{Numeric cutoff on \code{date_num} defining the treated (≥cutoff) vs control (<cutoff) groups. Defaults to 0.}
 
 \item{cluster}{NULL (default) for heteroskedasticity‐robust SE, or a string naming a column in \code{df} on which to cluster.}
+
+\item{controls}{NULL (default) or a character vector of other column-names in \code{df} to add as linear controls.}
 
 \item{placebos}{Logical; if TRUE, runs regressions at every feasible cutoff (skipping \code{excluded} after the main), and computes a placebo‐robust p‐value and CI.}
 
