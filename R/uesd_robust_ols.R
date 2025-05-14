@@ -114,8 +114,8 @@ uesd_robust_ols <- function(df, outcome, date_num, bw = 15, cutoff = 0,
     placebo_t_vals <- t_vals
     placebo_p      <- mean(abs(t_vals) >= abs(t_main))
 
-    # Symmetric placebo‐robust CI using the 97.5% quantile of |t|
-    q_abs <- stats::quantile(abs(t_vals), 0.975, na.rm = TRUE)
+    # Symmetric placebo‐robust CI using the 95% quantile of |t|
+    q_abs <- stats::quantile(abs(t_vals), 0.95, na.rm = TRUE)
     ci_placebo_lower <- est_main - q_abs * se_main
     ci_placebo_upper <- est_main + q_abs * se_main
     ci_placebo       <- c(lower = ci_placebo_lower, upper = ci_placebo_upper)

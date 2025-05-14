@@ -131,7 +131,7 @@ uesd_robust_rdd <- function(df, outcome, running, cutoff = 0,
     placebo_p <- mean(abs(z_vals) >= abs(z_sel))
 
     # symmetric placebo CI: quantile of |z|
-    qz <- stats::quantile(abs(z_vals), 0.975, na.rm = TRUE)
+    qz <- stats::quantile(abs(z_vals), 0.95, na.rm = TRUE)
     ci_placebo <- c(est_sel - qz*se_sel,
                     est_sel + qz*se_sel)
     cat(sprintf("Placebo‐robust 95%% CI for ITT: [%.4f, %.4f]\n\n",
