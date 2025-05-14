@@ -68,8 +68,7 @@ uesd_robust_ols <- function(df, outcome, date_num, bw = 15, cutoff = 0,
 
   # 5) Print main results
   cat("\nOLS UESD for outcome:", outcome, "\n")
-  cat("  Window: [", cutoff - bw, ",", cutoff + bw,
-      "]  (n =", n_main, ")\n")
+  cat("  Window: [", start, ",", end, "]  (n =", n_main, ")\n")
   cat("  SE type:", se_type, "\n\n")
   print(lmtest::coeftest(fit_lm, vcov. = V_main))
   cat(sprintf("\nUnadjusted 95%% CI for ITT: [%.4f, %.4f]\n", ci_main[1], ci_main[2]))
