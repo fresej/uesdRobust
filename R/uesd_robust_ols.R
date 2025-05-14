@@ -25,10 +25,15 @@ uesd_robust_ols <- function(df, outcome, date_num, bw = 15, cutoff = 0,
   # 0) Drop any NA in the running variable
   df_clean <- df[!is.na(df[[date_num]]), , drop = FALSE]
 
-  # 1) Main window subset and ITT variable
-  dat_main <- df_clean[abs(df_clean[[date_num]] - cutoff) <= bw, , drop = FALSE]
+  # 1) Main window subset and ITT variable (bw days on each side, half-open)
+  start <- cutoff - bw
+  end   <- cutoff + bw - 1
+  dat_main <- df_clean[
+    df_clean[[date_num]] >= start &
+    df_clean[[date_num]] <= end,
+  , drop = FALSE]
   if (nrow(dat_main) == 0) {
-    stop("No observations within the main window. Increase `bw` or adjust `cutoff`.")
+    stop("No observations within the symmetric window. Increase `bw` or adjust `cutoff`.")
   }
   dat_main$ITT <- ifelse(dat_main[[date_num]] >= cutoff, 1L, 0L)
 
