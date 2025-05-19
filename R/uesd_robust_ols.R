@@ -17,11 +17,15 @@
 #' @importFrom lmtest coeftest
 #' @export
 
-uesd_robust_ols <- function(df, outcome, date_num, bw = 15, cutoff = 0,
-                                                        cluster = NULL,
-                                                        controls    = NULL,
-                                                        placebos    = FALSE,
-                                                        excluded    = 3) {
+uesd_robust_ols <- function(df,
+                            outcome,
+                            date_num,
+                            bw        = 15,
+                            cutoff    = 0,
+                            cluster   = NULL,
+                            controls  = NULL,
+                            placebos  = FALSE,
+                            excluded  = 3) {
   # 0) Drop any NA in the running variable
   df_clean <- df[!is.na(df[[date_num]]), , drop = FALSE]
 
@@ -44,8 +48,6 @@ uesd_robust_ols <- function(df, outcome, date_num, bw = 15, cutoff = 0,
     ctrl_terms <- paste(controls, collapse = " + ")
     fml <- as.formula(paste(outcome, "~ ITT +", ctrl_terms))
   }
-
-
   fit_lm <- stats::lm(fml, data = dat_main)
 
   # 3) Covariance for main
@@ -53,7 +55,9 @@ uesd_robust_ols <- function(df, outcome, date_num, bw = 15, cutoff = 0,
     V_main  <- sandwich::vcovHC(fit_lm, type = "HC1")
     se_type <- "Heteroskedasticity‐robust"
   } else {
-    V_main  <- sandwich::vcovCL(fit_lm, cluster = dat_main[[cluster]], type = "HC1")
+    V_main  <- sandwich::vcovCL(fit_lm,
+                                cluster = dat_main[[cluster]],
+                                type    = "HC1")
     se_type <- paste0("Cluster‐robust (by ", cluster, ")")
   }
 
@@ -62,7 +66,8 @@ uesd_robust_ols <- function(df, outcome, date_num, bw = 15, cutoff = 0,
   se_main  <- sqrt(V_main["ITT","ITT"])
   t_main   <- est_main / se_main
   z        <- stats::qnorm(0.975)
-  ci_main  <- c(est_main - z * se_main, est_main + z * se_main)
+  ci_main  <- c(est_main - z * se_main,
+                est_main + z * se_main)
   p_main   <- 2 * (1 - stats::pnorm(abs(t_main)))
   n_main   <- nrow(dat_main)
 
@@ -71,16 +76,13 @@ uesd_robust_ols <- function(df, outcome, date_num, bw = 15, cutoff = 0,
   cat("  Window: [", start, ",", end, "]  (n =", n_main, ")\n")
   cat("  SE type:", se_type, "\n\n")
   print(lmtest::coeftest(fit_lm, vcov. = V_main))
-  cat(sprintf("\nUnadjusted 95%% CI for ITT: [%.4f, %.4f]\n", ci_main[1], ci_main[2]))
+  cat(sprintf("\nUnadjusted 95%% CI for ITT: [%.4f, %.4f]\n",
+              ci_main[1], ci_main[2]))
 
   # 6) Placebo loop if requested
-  placebo_p      <- NULL
-  placebo_t_vals <- NULL
-  ci_placebo     <- NULL
   if (placebos) {
-    cuts <- sort(unique(df_clean[[date_num]]))
-    # determine which cutoffs to exclude
-    pos_main <- match(cutoff, cuts)
+    cuts      <- sort(unique(df_clean[[date_num]]))
+    pos_main  <- match(cutoff, cuts)
     if (!is.na(pos_main) && excluded > 0) {
       exclude_inds <- seq(pos_main + 1, pos_main + excluded)
       exclude_inds <- exclude_inds[exclude_inds <= length(cuts)]
@@ -92,57 +94,72 @@ uesd_robust_ols <- function(df, outcome, date_num, bw = 15, cutoff = 0,
     t_vals <- numeric(0)
     for (c0 in cuts) {
       if (c0 %in% exclude_cuts) next
-      n_lower <- sum(df_clean[[date_num]] <  c0, na.rm = TRUE)
-      n_upper <- sum(df_clean[[date_num]] >= c0, na.rm = TRUE)
-      if (n_lower < 10 || n_upper < 10) next
+      n_lo <- sum(df_clean[[date_num]] <  c0, na.rm = TRUE)
+      n_hi <- sum(df_clean[[date_num]] >= c0, na.rm = TRUE)
+      if (n_lo < 10 || n_hi < 10) next
 
-      dat_p <- df_clean[abs(df_clean[[date_num]] - c0) <= bw, , drop = FALSE]
+      # 6a) symmetric window around c0, same bw logic
+      start_p <- c0 - bw
+      end_p   <- c0 + bw - 1
+      dat_p   <- df_clean[
+        df_clean[[date_num]] >= start_p &
+        df_clean[[date_num]] <= end_p,
+      , drop = FALSE]
       dat_p$ITT <- ifelse(dat_p[[date_num]] >= c0, 1L, 0L)
 
-      fit_p <- tryCatch(stats::lm(fml, data = dat_p), error = function(e) NULL)
+      # 6b) fit and collect t
+      fit_p <- tryCatch(stats::lm(fml, data = dat_p),
+                        error = function(e) NULL)
       if (is.null(fit_p)) next
       if (!"ITT" %in% names(stats::coef(fit_p))) next
 
       Vp <- if (is.null(cluster)) {
         sandwich::vcovHC(fit_p, type = "HC1")
       } else {
-        sandwich::vcovCL(fit_p, cluster = dat_p[[cluster]], type = "HC1")
+        sandwich::vcovCL(fit_p,
+                         cluster = dat_p[[cluster]],
+                         type    = "HC1")
       }
-      if (!("ITT" %in% rownames(Vp) && "ITT" %in% colnames(Vp))) next
+      if (!("ITT" %in% rownames(Vp) && "ITT" %in% colnames(Vp)))
+        next
 
       se_p  <- sqrt(Vp["ITT","ITT"])
       est_p <- stats::coef(fit_p)["ITT"]
       t_vals <- c(t_vals, est_p / se_p)
     }
 
-    placebo_t_vals <- t_vals
     placebo_p      <- mean(abs(t_vals) >= abs(t_main))
+    q_abs          <- stats::quantile(abs(t_vals), 0.975, na.rm = TRUE)
+    ci_pl_lo       <- est_main - q_abs * se_main
+    ci_pl_hi       <- est_main + q_abs * se_main
 
-    # Symmetric placebo‐robust CI using the 95% quantile of |t|
-    q_abs <- stats::quantile(abs(t_vals), 0.95, na.rm = TRUE)
-    ci_placebo_lower <- est_main - q_abs * se_main
-    ci_placebo_upper <- est_main + q_abs * se_main
-    ci_placebo       <- c(lower = ci_placebo_lower, upper = ci_placebo_upper)
-
-    cat(sprintf("Placebo‐robust 95%% CI for ITT: [%.4f, %.4f]\n\n",
-                ci_placebo_lower, ci_placebo_upper))
+    cat(sprintf("\nPlacebo‐robust 95%% CI for ITT: [%.4f, %.4f]\n",
+                ci_pl_lo, ci_pl_hi))
     cat(sprintf("Unadjusted p-value for ITT: %.5f\n", p_main))
-    cat(sprintf("Placebo‐robust p-value for ITT: %.5f\n", placebo_p))
+    cat(sprintf("Placebo‐robust p-value for ITT: %.5f\n\n", placebo_p))
+
+    # attach to output
+    out <- list(
+      estimate          = est_main,
+      se                 = se_main,
+      t_value            = t_main,
+      ci                 = setNames(ci_main, c("lower","upper")),
+      p_value            = p_main,
+      n_obs              = n_main,
+      placebo_t_values   = t_vals,
+      placebo_p_value    = placebo_p,
+      ci_placebo         = c(lower = ci_pl_lo, upper = ci_pl_hi)
+    )
+  } else {
+    out <- list(
+      estimate = est_main,
+      se        = se_main,
+      t_value   = t_main,
+      ci        = setNames(ci_main, c("lower","upper")),
+      p_value   = p_main,
+      n_obs     = n_main
+    )
   }
 
-  # 7) Return invisibly, now including t_value and placebo CI
-  out <- list(
-    estimate = est_main,
-    se        = se_main,
-    t_value   = t_main,
-    ci        = setNames(ci_main, c("lower","upper")),
-    p_value   = p_main,
-    n_obs     = n_main
-  )
-  if (placebos) {
-    out$placebo_t_values <- placebo_t_vals
-    out$placebo_p_value  <- placebo_p
-    out$ci_placebo       <- ci_placebo
-  }
   invisible(out)
 }
