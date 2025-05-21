@@ -56,8 +56,8 @@ uesd_coef_plot <- function(res) {
     ) +
     ggplot2::scale_x_discrete(expand = c(0.2, 0)) +
     ggplot2::labs(
-      x     = "Test",
-      y     = "ITT",
+      x     = "",
+      y     = "Estimate",
       title = "Original vs. Placebo-Robust 95% CI"
     ) +
     ggplot2::theme_classic(base_size = 20)
