@@ -20,7 +20,7 @@ uesd_placebo_plot <- function(res, binwidth = 0.1) {
     stat_name <- "Z-values"
     # read out the se_type if present
     subtitle_prefix <- if (!is.null(res$se_type)) {
-      paste0("RDD (", res$se_type, ") Main Z-value = ")
+      paste0("RDD Main Z-value = ")
     } else {
       "Main z = "
     }
