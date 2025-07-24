@@ -64,7 +64,9 @@ The function contains the following parameters:
 
 **placebos**: Logical; if TRUE, runs regressions at every feasible cutoff (skipping `excluded` after the main), and computes a placebo‐robust p‐value and CI.
 
-**excluded**: Integer; number of subsequent cutoffs after the main one to skip in the placebo loop (default = 3).
+**excluded**: Numeric vector of length 2: `c(post, pre)`.  `post` = number of cutoff‐dates *after* the main one to skip; `pre` = number of cutoff‐dates *before* the main one to skip. Defaults to `c(Inf, 0)`, i.e. exclude all post‑cutoff placebos and none pre‑cutoff
+
+**weight**: NULL (default) or a string naming a column in `df` of weights to pass to `lm()`.
 
 
 
@@ -86,10 +88,12 @@ The function contains the following parameters:
 
 **placebos**: Logical; if TRUE, runs placebo RDDs at every feasible cutoff (skipping `excluded` after the main) and computes a placebo-robust p-value and CI.
 
-**excluded**: Integer; number of subsequent cutoffs after the main one to skip in the placebo loop (default = 3).
+**excluded**: Numeric vector of length 2, `c(post_excl, pre_excl)`. Defaults to `c(Inf, 0)`, i.e. exclude **all** post‐cutoff placebo dates, none pre‐cutoff.
 
 **se_type**: Character; which rdrobust row to use for placebo inference. One of
     "conventional" (row 1), "bias-corrected" (row 2), or "robust" (row 3).  Default: "conventional".
+    
+**weight**: NULL (default) or a string naming a column in `df` of observation weights to pass to `rdrobust()`.
     
     
 ## uesd_placebo_plot
@@ -145,7 +149,7 @@ df_sim <- data.frame(running = sample(-150:100, size = n, replace = TRUE))
 main_cut    <- 0
 main_eff    <- 1
 placebo_cuts <- c(-76, -66, -56, -39, -30, -25, - 20, -17, -14, -11, -10, 
-                  -7, -2,  10, 15, 18, 23, 27, 29,  30, 33, 31, 34,45,66,76)
+                  -7, -2,  -10, -15, -18, -23, -27, -29,  -31, -33, -32, -34,-45,-68,-79)
 placebo_eff  <- c( 1.5, -2, 1.9, 1.6, -0.3, 1.7, -0.4,  0.5, -2.3, 0.7, -0.4,  0.5, 
                    -0.3, 0.7, -0.4, 0.7, 0.9, 1.8, 3, 2.1, 2.2, 1.7, 1.1, 1.2, 1, -1)
 df_sim$outcome <- 0

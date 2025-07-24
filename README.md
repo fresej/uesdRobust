@@ -83,8 +83,13 @@ string naming a column in `df` on which to cluster.
 cutoff (skipping `excluded` after the main), and computes a
 placebo‐robust p‐value and CI.
 
-**excluded**: Integer; number of subsequent cutoffs after the main one
-to skip in the placebo loop (default = 3).
+**excluded**: Numeric vector of length 2: `c(post, pre)`. `post` =
+number of cutoff‐dates *after* the main one to skip; `pre` = number of
+cutoff‐dates *before* the main one to skip. Defaults to `c(Inf, 0)`,
+i.e. exclude all post‑cutoff placebos and none pre‑cutoff
+
+**weight**: NULL (default) or a string naming a column in `df` of
+weights to pass to `lm()`.
 
 ## uesd_robust_rdd
 
@@ -119,12 +124,16 @@ uses rdrobust’s optimal bandwidth.
 cutoff (skipping `excluded` after the main) and computes a
 placebo-robust p-value and CI.
 
-**excluded**: Integer; number of subsequent cutoffs after the main one
-to skip in the placebo loop (default = 3).
+**excluded**: Numeric vector of length 2, `c(post_excl, pre_excl)`.
+Defaults to `c(Inf, 0)`, i.e. exclude **all** post‐cutoff placebo dates,
+none pre‐cutoff.
 
 **se_type**: Character; which rdrobust row to use for placebo inference.
 One of “conventional” (row 1), “bias-corrected” (row 2), or “robust”
 (row 3). Default: “conventional”.
+
+**weight**: NULL (default) or a string naming a column in `df` of
+observation weights to pass to `rdrobust()`.
 
 ## uesd_placebo_plot
 
@@ -196,7 +205,7 @@ df_sim <- data.frame(running = sample(-150:100, size = n, replace = TRUE))
 main_cut    <- 0
 main_eff    <- 1
 placebo_cuts <- c(-76, -66, -56, -39, -30, -25, - 20, -17, -14, -11, -10, 
-                  -7, -2,  10, 15, 18, 23, 27, 29,  30, 33, 31, 34,45,66,76)
+                  -7, -2,  -10, -15, -18, -23, -27, -29,  -31, -33, -32, -34,-45,-68,-79)
 placebo_eff  <- c( 1.5, -2, 1.9, 1.6, -0.3, 1.7, -0.4,  0.5, -2.3, 0.7, -0.4,  0.5, 
                    -0.3, 0.7, -0.4, 0.7, 0.9, 1.8, 3, 2.1, 2.2, 1.7, 1.1, 1.2, 1, -1)
 df_sim$outcome <- 0
@@ -216,10 +225,10 @@ rdd_res <- uesd_robust_rdd(
   placebos = TRUE,
   se_type  = "conventional"
 )
-#> Warning in rdrobust::rdrobust(y = df_clean[[outcome]], x = df_clean[[running]],
-#> : Mass points detected in the running variable.
+#> Warning in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+#> Mass points detected in the running variable.
 #> 
-#>  RDD UESD for outcome: outcome 
+#> RDD UESD for outcome: outcome 
 #> Sharp RD estimates using local polynomial regression.
 #> 
 #> Number of Obs.                 3000
@@ -228,29 +237,27 @@ rdd_res <- uesd_robust_rdd(
 #> VCE method                       NN
 #> 
 #> Number of Obs.                 1779         1221
-#> Eff. Number of Obs.              62           90
+#> Eff. Number of Obs.             107          132
 #> Order est. (p)                    1            1
 #> Order bias  (q)                   2            2
-#> BW est. (h)                   6.453        6.453
-#> BW bias (b)                  11.592       11.592
-#> rho (h/b)                     0.557        0.557
+#> BW est. (h)                  10.625       10.625
+#> BW bias (b)                  23.018       23.018
+#> rho (h/b)                     0.462        0.462
 #> Unique Obs.                     150          101
 #> 
 #> =============================================================================
 #>         Method     Coef. Std. Err.         z     P>|z|      [ 95% C.I. ]       
 #> =============================================================================
-#>   Conventional     0.866     0.410     2.113     0.035     [0.063 , 1.669]     
-#>         Robust         -         -     2.115     0.034     [0.076 , 1.983]     
+#>   Conventional     0.669     0.307     2.177     0.030     [0.067 , 1.271]     
+#>         Robust         -         -     1.456     0.145    [-0.171 , 1.157]     
 #> =============================================================================
 #> 
-#> Using [conventional] row for placebos:   estimate=0.8656   se=0.4096   z=2.1132   p=0.0346
+#> Using [conventional] row for placebos: estimate=0.6690  se=0.3074  z=2.1766  p=0.0295
 #> 
-#> Unadjusted 95% CI for ITT: [0.0628, 1.6685]
+#> Unadjusted 95% CI for ITT: [0.0666, 1.2715]
 #> 
-#> Placebo‐robust 95% CI for ITT: [-0.6169, 2.3481]
-#> 
-#> Unadjusted p-value for ITT: 0.03458
-#> Placebo‐robust p-value for ITT: 0.19184
+#> Placebo‐robust p-value: 0.2953
+#> Placebo‐robust 95% CI:     [-1.6084, 2.9464]
 
 
 # plot of the placebo distribution of z‐values with the uesd_placebo_plot function:
