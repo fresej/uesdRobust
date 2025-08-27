@@ -96,7 +96,7 @@ uesd_robust_ols <- function(df,
   # 7) Placebo loop if requested
   if (placebos) {
     cuts     <- sort(unique(df_clean[[date_num]]))
-    pos_main <- match(cutoff, cuts)
+    pos_main <- findInterval(cutoff, cuts)
 
     # determine which post‑ and pre‑cutoffs to exclude
     post_excl <- excluded[1]
