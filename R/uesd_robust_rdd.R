@@ -105,7 +105,7 @@ uesd_robust_rdd <- function(df,
       }
     } else integer(0)
 
-    all_idx <- unique(c(post_idx, pre_idx))
+    all_idx <- unique(c(pos_main, post_idx, pre_idx))
     all_idx <- all_idx[all_idx >= 1 & all_idx <= length(cuts)]
     exclude_cuts <- cuts[all_idx]
 

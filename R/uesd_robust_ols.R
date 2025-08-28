@@ -114,7 +114,7 @@ uesd_robust_ols <- function(df,
     } else {
       pre_idx <- integer(0)
     }
-    all_excl_idx <- unique(c(post_idx, pre_idx))
+    all_excl_idx <- unique(c(pos_main, post_idx, pre_idx))
     exclude_cuts <- cuts[ all_excl_idx[ all_excl_idx>=1 & all_excl_idx<=length(cuts) ] ]
 
     t_vals <- numeric(0)
