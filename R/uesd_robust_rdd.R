@@ -82,7 +82,7 @@ uesd_robust_rdd <- function(df,
   # 7) Placebo loop if requested
   z_vals <- numeric(0)
   if (placebos) {
-    cuts <- sort(unique(c(df_clean[[date_num]], cutoff)))
+    cuts <- sort(unique(c(df_clean[[running]], cutoff)))
     pos_main <- match(cutoff, cuts)
     post_excl <- excluded[1]
     pre_excl  <- excluded[2]
