@@ -4,6 +4,7 @@
 # uesdRobust
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 The uesdRobust R package accompanies the paper “Type I Error Inflation
@@ -245,23 +246,30 @@ rdd_res <- uesd_robust_rdd(
 #> rho (h/b)                     0.462        0.462
 #> Unique Obs.                     150          101
 #> 
-#> =============================================================================
-#>         Method     Coef. Std. Err.         z     P>|z|      [ 95% C.I. ]       
-#> =============================================================================
-#>   Conventional     0.669     0.307     2.177     0.030     [0.067 , 1.271]     
-#>         Robust         -         -     1.456     0.145    [-0.171 , 1.157]     
-#> =============================================================================
+#> =====================================================================
+#>                    Point    Robust Inference
+#>                 Estimate         z     P>|z|      [ 95% C.I. ]       
+#> ---------------------------------------------------------------------
+#>      RD Effect     0.669     1.456     0.145    [-0.171 , 1.157]     
+#> =====================================================================
 #> 
 #> Using [conventional] row for placebos: estimate=0.6690  se=0.3074  z=2.1766  p=0.0295
 #> 
 #> Unadjusted 95% CI for ITT: [0.0666, 1.2715]
 #> 
 #> Placebo‐robust p-value: 0.2905
-#> Placebo‐robust 95% CI:     [-1.6124, 2.9505]
+#> Placebo‐robust 95% CI:     [-1.2713, 2.6094]
 
 
 # plot of the placebo distribution of z‐values with the uesd_placebo_plot function:
 uesd_placebo_plot(rdd_res)
+#> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+#> ℹ Please use `linewidth` instead.
+#> ℹ The deprecated feature was likely used in the uesdRobust package.
+#>   Please report the issue at <https://github.com/fresej/uesdRobust/issues>.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
