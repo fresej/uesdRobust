@@ -164,7 +164,7 @@ uesd_robust_ols <- function(df,
     }
 
     placebo_p   <- mean(abs(t_vals) >= abs(t_main))
-    q_abs       <- stats::quantile(abs(t_vals), 0.975, na.rm = TRUE)
+    q_abs       <- stats::quantile(abs(t_vals), 0.95, na.rm = TRUE)
     ci_pl_lo    <- est_main - q_abs * se_main
     ci_pl_hi    <- est_main + q_abs * se_main
 

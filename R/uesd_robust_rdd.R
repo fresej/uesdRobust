@@ -134,7 +134,7 @@ uesd_robust_rdd <- function(df,
     }
 
     placebo_p  <- mean(abs(z_vals) >= abs(z_sel))
-    qz         <- stats::quantile(abs(z_vals), 0.975, na.rm = TRUE)
+    qz         <- stats::quantile(abs(z_vals), 0.95, na.rm = TRUE)
     ci_placebo <- c(est_sel - qz*se_sel, est_sel + qz*se_sel)
 
     cat(sprintf("Placebo‐robust p-value: %.4f\n",   placebo_p))
