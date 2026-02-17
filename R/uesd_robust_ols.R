@@ -10,7 +10,7 @@
 #' @param weight NULL (default) or a string naming a column in `df` of weights to pass to `lm()`.
 #' @param placebos Logical; if TRUE, runs regressions at every feasible cutoff (skipping those in `excluded`) and computes a placebo‐robust p‐value and CI.
 #' @param excluded Numeric vector of length 2: `c(post, pre)`.  `post` = number of cutoff‐dates *after* the main one to skip; `pre` = number of cutoff‐dates *before* the main one to skip.
-#'        Defaults to `c(Inf, 0)`, i.e. exclude all post‑cutoff placebos and none pre‑cutoff.
+#'        Defaults to `NULL`, which resolves to `c(Inf, bw)`, i.e. exclude all post‑cutoff placebos and `bw` pre‑cutoff placebos (those within the bandwidth of the main cutoff).
 #' @return Invisibly returns a list with elements:
 #'   * `estimate`, `se`, `t_value`, `ci` (length‐2 numeric), `p_value`, `n_obs`
 #'   * if `placebos = TRUE`: also `placebo_t_values`, `placebo_p_value`, `ci_placebo`
@@ -27,7 +27,7 @@ uesd_robust_ols <- function(df,
                             controls  = NULL,
                             weight    = NULL,
                             placebos  = FALSE,
-                            excluded  = c(Inf, 0)) {
+                            excluded  = NULL) {
   # 0) Drop any NA in the running variable
   df_clean <- df[!is.na(df[[date_num]]), , drop = FALSE]
 
@@ -99,6 +99,7 @@ uesd_robust_ols <- function(df,
     pos_main <- match(cutoff, cuts)
 
     # determine which post‑ and pre‑cutoffs to exclude
+    if (is.null(excluded)) excluded <- c(Inf, bw)
     post_excl <- excluded[1]
     pre_excl  <- excluded[2]
 

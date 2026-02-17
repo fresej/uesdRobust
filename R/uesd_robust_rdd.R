@@ -9,7 +9,7 @@
 #' @param weight NULL (default) or a string naming a column in `df` of observation weights to pass to `rdrobust()`.
 #' @param placebos Logical; if `TRUE`, runs placebo RDDs at every feasible cutoff (skipping those in `excluded`) and computes a placebo‐robust p‐value and CI.
 #' @param excluded Numeric vector of length 2, `c(post_excl, pre_excl)`.
-#'   Defaults to `c(Inf, 0)`, i.e. exclude **all** post‐cutoff placebo dates, none pre‐cutoff.
+#'   Defaults to `NULL`, which resolves to `c(Inf, ceiling(h))`, i.e. exclude **all** post‐cutoff placebo dates and pre‐cutoff placebos within the bandwidth of the main cutoff.
 #' @param se_type Character; which rdrobust row to use for placebo inference. One of
 #'   `"conventional"` (row 1), `"bias-corrected"` (row 2), or `"robust"` (row 3). Default: `"conventional"`.
 #' @return Invisibly returns a list with:
@@ -28,7 +28,7 @@ uesd_robust_rdd <- function(df,
                             bw        = NULL,
                             weight    = NULL,
                             placebos  = FALSE,
-                            excluded  = c(Inf, 0),
+                            excluded  = NULL,
                             se_type   = c("conventional","bias-corrected","robust")) {
   se_type <- match.arg(se_type)
   row_idx <- switch(se_type,
@@ -84,6 +84,7 @@ uesd_robust_rdd <- function(df,
   if (placebos) {
     cuts <- sort(unique(c(df_clean[[running]], cutoff)))
     pos_main <- match(cutoff, cuts)
+    if (is.null(excluded)) excluded <- c(Inf, ceiling(h_used))
     post_excl <- excluded[1]
     pre_excl  <- excluded[2]
 
