@@ -1,6 +1,6 @@
 Package: uesdRobust
 Title: An R package to estimate UESDs and make them robust to type I error inflation 
-Version: 0.0.0.9000
+Version: 0.0.0.91
 Authors@R: 
     person("Sascha", "Riaz", , "sascha.riaz@eui.eu", role = c("aut", "cre"))
     person("Joris", "Frese", , "joris.frese@eui.eu", role = c("aut", "cre"),
