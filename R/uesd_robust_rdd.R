@@ -134,13 +134,17 @@ uesd_robust_rdd <- function(df,
       z_vals <- c(z_vals, co_p[row_idx] / se_p[row_idx])
     }
 
-    placebo_p  <- mean(abs(z_vals) >= abs(z_sel))
-    qz         <- stats::quantile(abs(z_vals), 0.95, na.rm = TRUE)
+    all_z_vals <- c(z_vals, z_sel)
+    placebo_p  <- mean(abs(all_z_vals) >= abs(z_sel))
+    qz         <- stats::quantile(abs(all_z_vals), 0.95, na.rm = TRUE)
     ci_placebo <- c(est_sel - qz*se_sel, est_sel + qz*se_sel)
 
     cat(sprintf("Placebo‐robust p-value: %.4f\n",   placebo_p))
     cat(sprintf("Placebo‐robust 95%% CI:     [%.4f, %.4f]\n\n",
                 ci_placebo[1], ci_placebo[2]))
+    if (length(z_vals) < 20) {
+      cat("Warning: the number of available placebo cutoffs is very low and the resulting placebo-robust p-value and confidence interval are unreliable. Try working with a shorter bandwidth for better results or change the exclusion criteria for placebo cutoffs.\n\n")
+    }
   }
 
   # 8) Return invisibly
@@ -164,7 +168,7 @@ uesd_robust_rdd <- function(df,
     ci         = setNames(ci_sel, c("lower","upper"))
   )
   if (placebos) {
-    out$z_values        <- z_vals
+    out$z_values        <- all_z_vals
     out$placebo_p_value <- placebo_p
     out$ci_placebo      <- setNames(ci_placebo, c("lower","upper"))
   }

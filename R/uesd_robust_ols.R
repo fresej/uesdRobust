@@ -164,15 +164,19 @@ uesd_robust_ols <- function(df,
       t_vals <- c(t_vals, est_p / se_p)
     }
 
-    placebo_p   <- mean(abs(t_vals) >= abs(t_main))
-    q_abs       <- stats::quantile(abs(t_vals), 0.95, na.rm = TRUE)
-    ci_pl_lo    <- est_main - q_abs * se_main
-    ci_pl_hi    <- est_main + q_abs * se_main
+  all_t_vals  <- c(t_vals, t_main)
+     placebo_p   <- mean(abs(all_t_vals) >= abs(t_main))
+     q_abs       <- stats::quantile(abs(all_t_vals), 0.95, na.rm = TRUE)
+     ci_pl_lo    <- est_main - q_abs * se_main
+     ci_pl_hi    <- est_main + q_abs * se_main
 
     cat(sprintf("\nPlacebo‑robust 95%% CI for ITT: [%.4f, %.4f]\n",
                 ci_pl_lo, ci_pl_hi))
     cat(sprintf("Unadjusted p‑value for ITT: %.5f\n", p_main))
     cat(sprintf("Placebo‑robust p‑value for ITT: %.5f\n\n", placebo_p))
+    if (length(t_vals) < 20) {
+      cat("Warning: the number of available placebo cutoffs is very low and the resulting placebo-robust p-value and confidence interval are unreliable. Try working with a shorter bandwidth for better results or change the exclusion criteria for placebo cutoffs.\n\n")
+    }
 
     out <- list(
       estimate        = est_main,
@@ -181,7 +185,7 @@ uesd_robust_ols <- function(df,
       ci               = setNames(ci_main, c("lower","upper")),
       p_value          = p_main,
       n_obs            = n_main,
-      placebo_t_values = t_vals,
+      placebo_t_values = all_t_vals,
       placebo_p_value  = placebo_p,
       ci_placebo       = c(lower = ci_pl_lo, upper = ci_pl_hi)
     )
