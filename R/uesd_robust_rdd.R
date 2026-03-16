@@ -173,5 +173,7 @@ uesd_robust_rdd <- function(df,
     out$ci_placebo      <- setNames(ci_placebo, c("lower","upper"))
   }
 
+  cat("For potential limitations and pitfalls of RD estimation for UESDs, please consult Bertoli et al. (2026). Keep those limitations in mind when interpreting these outputs.\n\n")
+
   invisible(out)
 }
