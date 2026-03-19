@@ -86,8 +86,9 @@ placebo‐robust p‐value and CI.
 
 **excluded**: Numeric vector of length 2: `c(post, pre)`. `post` =
 number of cutoff‐dates *after* the main one to skip; `pre` = number of
-cutoff‐dates *before* the main one to skip. Defaults to `c(Inf, 0)`,
-i.e. exclude all post‑cutoff placebos and none pre‑cutoff
+cutoff‐dates *before* the main one to skip. Defaults to `c(Inf, bw)`,
+i.e. exclude all post‑cutoff placebos and all pre‑cutoff placebos within
+the main bandwidth
 
 **weight**: NULL (default) or a string naming a column in `df` of
 weights to pass to `lm()`.
@@ -126,8 +127,8 @@ cutoff (skipping `excluded` after the main) and computes a
 placebo-robust p-value and CI.
 
 **excluded**: Numeric vector of length 2, `c(post_excl, pre_excl)`.
-Defaults to `c(Inf, 0)`, i.e. exclude **all** post‐cutoff placebo dates,
-none pre‐cutoff.
+Defaults to `c(Inf, ceiling(h_used))`, i.e. exclude **all** post‐cutoff
+placebo dates and all pre‐cutoff placebos within the main bandwidth.
 
 **se_type**: Character; which rdrobust row to use for placebo inference.
 One of “conventional” (row 1), “bias-corrected” (row 2), or “robust”
@@ -257,8 +258,10 @@ rdd_res <- uesd_robust_rdd(
 #> 
 #> Unadjusted 95% CI for ITT: [0.0666, 1.2715]
 #> 
-#> Placebo‐robust p-value: 0.2905
-#> Placebo‐robust 95% CI:     [-1.2713, 2.6094]
+#> Placebo‐robust p-value: 0.2826
+#> Placebo‐robust 95% CI:     [-1.3170, 2.6550]
+#> 
+#> For potential limitations and pitfalls of RD estimation for UESDs, please consult Bertoli et al. (2026). Keep those limitations in mind when interpreting these outputs.
 
 
 # plot of the placebo distribution of z‐values with the uesd_placebo_plot function:
